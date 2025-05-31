@@ -1,12 +1,8 @@
 ﻿# -*- coding: utf-8 -*-
 """
-WSGI entry point for Render deployment
+WSGI entry point para o Render com codificação corrigida
 """
-from sistema_financeiro import PrimaArenaFinanceSystem
-
-# Criar a instância global para o Gunicorn usar
-system = PrimaArenaFinanceSystem()
-app = system.app
+from flask_app import app
 
 if __name__ == '__main__':
     import os
