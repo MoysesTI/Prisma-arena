@@ -1,1 +1,1 @@
-﻿web: gunicorn wsgi:app
+﻿web: gunicorn 'sistema_financeiro:system.app'

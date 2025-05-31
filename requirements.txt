@@ -26,7 +26,9 @@ xlsxwriter==3.1.9
 # Outras dependÃªncias
 python-dateutil==2.8.2
 pytz==2023.3
-six==1.16.0# Servidor WSGI para produÃ§Ã£o no Render.com
+six==1.16.0
+# Servidor WSGI para produção no Render.com
+gunicorn==21.2.0
 gunicorn==21.2.0
 
 # Dependências adicionais para produção
