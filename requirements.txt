@@ -3,7 +3,7 @@
 
 # Flask e extensÃµes
 Flask==2.3.3
-werkzeug==2.2.3
+werkzeug==2.3.7
 
 # Dash e componentes
 dash==2.13.0
