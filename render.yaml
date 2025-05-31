@@ -1,0 +1,12 @@
+﻿services:
+  - type: web
+    name: prima-arena-finance
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python sistema_financeiro.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9
+      - key: PORT
+        value: 8050
+    autoDeploy: true

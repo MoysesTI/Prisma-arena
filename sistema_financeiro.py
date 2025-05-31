@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
-Sistema Financeiro Prima Arena Finance - Versão Corrigida COMPLETA
-Correção do erro de URL + Unicode + Manutenção de TODAS as funcionalidades
+Sistema Financeiro Prima Arena Finance - VersÃ£o Corrigida COMPLETA
+CorreÃ§Ã£o do erro de URL + Unicode + ManutenÃ§Ã£o de TODAS as funcionalidades
 """
 import os
 import sqlite3
@@ -43,7 +43,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # =====================================================
-# CONFIGURAÇÕES E CONSTANTES
+# CONFIGURAÃ‡Ã•ES E CONSTANTES
 # =====================================================
 
 BASE_DIR = Path(__file__).parent
@@ -53,11 +53,11 @@ STATIC_FOLDER = BASE_DIR / 'static'
 EXPORT_FOLDER = BASE_DIR / 'exports'
 TEMPLATES_FOLDER = BASE_DIR / 'templates'
 
-# Criar pastas necessárias
+# Criar pastas necessÃ¡rias
 for folder in [UPLOAD_FOLDER, STATIC_FOLDER, EXPORT_FOLDER, TEMPLATES_FOLDER]:
     folder.mkdir(exist_ok=True)
 
-# Configurações do sistema
+# ConfiguraÃ§Ãµes do sistema
 CONFIG = {
     'MAX_FILE_SIZE': 50 * 1024 * 1024,  # 50MB
     'ALLOWED_EXTENSIONS': {'xlsx', 'xls', 'csv', 'txt', 'json'},
@@ -95,7 +95,7 @@ class DatabaseManager:
     def init_database(self):
         try:
             with self.get_connection() as conn:
-                # Tabela de usuários
+                # Tabela de usuÃ¡rios
                 conn.execute('''
                     CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,7 +129,7 @@ class DatabaseManager:
                     )
                 ''')
 
-                # Tabela de análises salvas
+                # Tabela de anÃ¡lises salvas
                 conn.execute('''
                     CREATE TABLE IF NOT EXISTS saved_analyses (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -162,7 +162,7 @@ class DatabaseManager:
                     )
                 ''')
 
-                # Inserir usuários admin
+                # Inserir usuÃ¡rios admin
                 for username, password in CONFIG['ADMIN_USERS'].items():
                     password_hash = generate_password_hash(password)
                     conn.execute('''
@@ -196,7 +196,7 @@ class DatabaseManager:
                     return dict(user)
                 return None
         except Exception as e:
-            logger.error(f"Erro na autenticação: {e}")
+            logger.error(f"Erro na autenticaÃ§Ã£o: {e}")
             return None
 
     def log_user_action(self, user_id, action, details=None, ip_address=None, user_agent=None):
@@ -298,7 +298,7 @@ class PrimaArenaFinanceSystem:
                     flash(f'Bem-vindo, {user["full_name"]}!', 'success')
                     return redirect(url_for('dashboard'))
                 else:
-                    flash('Usuário ou senha inválidos!', 'danger')
+                    flash('UsuÃ¡rio ou senha invÃ¡lidos!', 'danger')
 
             return render_template('login.html')
 
@@ -384,7 +384,7 @@ class PrimaArenaFinanceSystem:
                     logger.error(f"Erro no upload: {e}")
                     flash('Erro ao fazer upload do arquivo', 'danger')
             else:
-                flash('Tipo de arquivo não permitido', 'danger')
+                flash('Tipo de arquivo nÃ£o permitido', 'danger')
 
             return redirect(url_for('dashboard'))
 
@@ -400,7 +400,7 @@ class PrimaArenaFinanceSystem:
                 ''', (file_id, g.user['id'])).fetchone()
 
             if not file_info:
-                flash('Arquivo não encontrado', 'danger')
+                flash('Arquivo nÃ£o encontrado', 'danger')
                 return redirect(url_for('dashboard'))
 
             session['current_file_id'] = file_id
@@ -409,7 +409,7 @@ class PrimaArenaFinanceSystem:
         @self.app.route('/api/file-data/<int:file_id>')
         def get_file_data(file_id):
             if g.user is None:
-                return jsonify({'error': 'Não autorizado'}), 401
+                return jsonify({'error': 'NÃ£o autorizado'}), 401
 
             try:
                 with self.db.get_connection() as conn:
@@ -419,7 +419,7 @@ class PrimaArenaFinanceSystem:
                     ''', (file_id, g.user['id'])).fetchone()
 
                 if not file_info:
-                    return jsonify({'error': 'Arquivo não encontrado'}), 404
+                    return jsonify({'error': 'Arquivo nÃ£o encontrado'}), 404
 
                 df, stats_data = self.process_file(Path(file_info['file_path']))
 
@@ -492,7 +492,7 @@ class PrimaArenaFinanceSystem:
                                         html.I(className="fas fa-chart-line me-2 text-primary"),
                                         CONFIG['APP_NAME']
                                     ], className="mb-1"),
-                                    html.P("Dashboard Financeiro - Análises Avançadas", className="text-muted mb-0")
+                                    html.P("Dashboard Financeiro - AnÃ¡lises AvanÃ§adas", className="text-muted mb-0")
                                 ], md=8),
                                 dbc.Col([
                                     dbc.ButtonGroup([
@@ -516,14 +516,14 @@ class PrimaArenaFinanceSystem:
                 ])
             ]),
 
-            # Seção de Upload e Seleção
+            # SeÃ§Ã£o de Upload e SeleÃ§Ã£o
             dbc.Row([
                 dbc.Col([
                     dbc.Card([
                         dbc.CardHeader([
                             html.H5([
                                 html.I(className="fas fa-file-upload me-2"),
-                                "Dados para Análise"
+                                "Dados para AnÃ¡lise"
                             ], className="mb-0 text-primary")
                         ]),
                         dbc.CardBody([
@@ -532,7 +532,7 @@ class PrimaArenaFinanceSystem:
                                     html.Label("Selecionar Arquivo:", className="fw-bold mb-2"),
                                     dcc.Dropdown(
                                         id='file-selector',
-                                        placeholder="Escolha um arquivo para análise...",
+                                        placeholder="Escolha um arquivo para anÃ¡lise...",
                                         className="mb-2"
                                     ),
                                 ], md=8),
@@ -549,7 +549,7 @@ class PrimaArenaFinanceSystem:
             # Cards de Resumo Inteligentes
             dbc.Row(id="smart-summary-cards", className="mb-4"),
 
-            # Painel de Filtros Avançado
+            # Painel de Filtros AvanÃ§ado
             dbc.Row([
                 dbc.Col([
                     dbc.Card([
@@ -574,10 +574,10 @@ class PrimaArenaFinanceSystem:
                         ]),
                         dbc.Collapse([
                             dbc.CardBody([
-                                # Filtros Rápidos de Data Melhorados
+                                # Filtros RÃ¡pidos de Data Melhorados
                                 dbc.Row([
                                     dbc.Col([
-                                        html.Label("⚡ Filtros Rápidos de Período:", className="fw-bold mb-2 text-info"),
+                                        html.Label("âš¡ Filtros RÃ¡pidos de PerÃ­odo:", className="fw-bold mb-2 text-info"),
                                         dbc.ButtonGroup([
                                             dbc.Button("Hoje", id="btn-hoje", color="info", size="sm", outline=True),
                                             dbc.Button("Ontem", id="btn-ontem", color="info", size="sm", outline=True),
@@ -585,14 +585,14 @@ class PrimaArenaFinanceSystem:
                                             dbc.Button("Semana Passada", id="btn-semana-passada", color="info", size="sm", outline=True),
                                         ], className="w-100 mb-2"),
                                         dbc.ButtonGroup([
-                                            dbc.Button("Últimos 7 Dias", id="btn-7dias", color="warning", size="sm", outline=True),
-                                            dbc.Button("Últimos 15 Dias", id="btn-15dias", color="warning", size="sm", outline=True),
-                                            dbc.Button("Últimos 30 Dias", id="btn-30dias", color="warning", size="sm", outline=True),
-                                            dbc.Button("Últimos 90 Dias", id="btn-90dias", color="warning", size="sm", outline=True),
+                                            dbc.Button("Ãšltimos 7 Dias", id="btn-7dias", color="warning", size="sm", outline=True),
+                                            dbc.Button("Ãšltimos 15 Dias", id="btn-15dias", color="warning", size="sm", outline=True),
+                                            dbc.Button("Ãšltimos 30 Dias", id="btn-30dias", color="warning", size="sm", outline=True),
+                                            dbc.Button("Ãšltimos 90 Dias", id="btn-90dias", color="warning", size="sm", outline=True),
                                         ], className="w-100 mb-2"),
                                         dbc.ButtonGroup([
-                                            dbc.Button("Este Mês", id="btn-este-mes", color="success", size="sm", outline=True),
-                                            dbc.Button("Mês Passado", id="btn-mes-passado", color="success", size="sm", outline=True),
+                                            dbc.Button("Este MÃªs", id="btn-este-mes", color="success", size="sm", outline=True),
+                                            dbc.Button("MÃªs Passado", id="btn-mes-passado", color="success", size="sm", outline=True),
                                             dbc.Button("Este Ano", id="btn-este-ano", color="success", size="sm", outline=True),
                                             dbc.Button("Limpar Filtros", id="btn-clear-filters", color="secondary", size="sm")
                                         ], className="w-100 mb-3")
@@ -602,14 +602,14 @@ class PrimaArenaFinanceSystem:
                                 # Filtros por Dia da Semana
                                 dbc.Row([
                                     dbc.Col([
-                                        html.Label("📅 Filtros por Dia da Semana:", className="fw-bold mb-2 text-primary"),
+                                        html.Label("ðŸ“… Filtros por Dia da Semana:", className="fw-bold mb-2 text-primary"),
                                         dbc.ButtonGroup([
                                             dbc.Button("Seg", id="btn-segunda", color="outline-primary", size="sm"),
                                             dbc.Button("Ter", id="btn-terca", color="outline-primary", size="sm"),
                                             dbc.Button("Qua", id="btn-quarta", color="outline-primary", size="sm"),
                                             dbc.Button("Qui", id="btn-quinta", color="outline-primary", size="sm"),
                                             dbc.Button("Sex", id="btn-sexta", color="outline-primary", size="sm"),
-                                            dbc.Button("Sáb", id="btn-sabado", color="outline-primary", size="sm"),
+                                            dbc.Button("SÃ¡b", id="btn-sabado", color="outline-primary", size="sm"),
                                             dbc.Button("Dom", id="btn-domingo", color="outline-primary", size="sm"),
                                         ], className="w-100 mb-3")
                                     ], md=12)
@@ -618,7 +618,7 @@ class PrimaArenaFinanceSystem:
                                 # Filtros Detalhados
                                 dbc.Row([
                                     dbc.Col([
-                                        html.Label("Período Personalizado:", className="fw-bold text-primary"),
+                                        html.Label("PerÃ­odo Personalizado:", className="fw-bold text-primary"),
                                         dcc.DatePickerRange(
                                             id='date-picker',
                                             display_format='DD/MM/YYYY',
@@ -693,18 +693,18 @@ class PrimaArenaFinanceSystem:
                 ], md=12, className="mb-4")
             ]),
 
-            # Área Principal de Gráficos
+            # Ãrea Principal de GrÃ¡ficos
             dbc.Row([
                 dbc.Col([
                     dbc.Card([
                         dbc.CardHeader([
                             dbc.Tabs([
-                                dbc.Tab(label="Visão Geral", tab_id="tab-overview"),
-                                dbc.Tab(label="Análise por Banco", tab_id="tab-banco"),
-                                dbc.Tab(label="Análise por Categoria", tab_id="tab-categoria"),
+                                dbc.Tab(label="VisÃ£o Geral", tab_id="tab-overview"),
+                                dbc.Tab(label="AnÃ¡lise por Banco", tab_id="tab-banco"),
+                                dbc.Tab(label="AnÃ¡lise por Categoria", tab_id="tab-categoria"),
                                 dbc.Tab(label="Formas de Recebimento", tab_id="tab-forma"),
-                                dbc.Tab(label="Tendências", tab_id="tab-trends"),
-                                dbc.Tab(label="Distribuições", tab_id="tab-distributions")
+                                dbc.Tab(label="TendÃªncias", tab_id="tab-trends"),
+                                dbc.Tab(label="DistribuiÃ§Ãµes", tab_id="tab-distributions")
                             ], id="main-tabs", active_tab="tab-overview")
                         ]),
                         dbc.CardBody([
@@ -743,7 +743,7 @@ class PrimaArenaFinanceSystem:
             dcc.Store(id='filtered-data'),
             dcc.Store(id='filter-stats'),
 
-            # Interval para atualizações
+            # Interval para atualizaÃ§Ãµes
             dcc.Interval(id='interval-component', interval=30000, n_intervals=0)
 
         ], fluid=True, className="p-4 bg-light")
@@ -778,16 +778,16 @@ class PrimaArenaFinanceSystem:
                             'stats': stats_data,
                             'file_info': dict(file_info)
                         },
-                        self.create_status_badge(f"✓ {len(df):,} registros carregados", "success")
+                        self.create_status_badge(f"âœ“ {len(df):,} registros carregados", "success")
                     )
 
             except Exception as e:
                 logger.error(f"Erro ao carregar dados: {e}")
-                return self.get_file_options(), None, self.create_status_badge("✗ Erro ao carregar", "danger")
+                return self.get_file_options(), None, self.create_status_badge("âœ— Erro ao carregar", "danger")
 
-            return self.get_file_options(), None, self.create_status_badge("Arquivo não encontrado", "warning")
+            return self.get_file_options(), None, self.create_status_badge("Arquivo nÃ£o encontrado", "warning")
 
-        # Callback para atualizar opções de filtros
+        # Callback para atualizar opÃ§Ãµes de filtros
         @dash_app.callback(
             [Output('filter-banco', 'options'),
              Output('filter-categoria', 'options'),
@@ -805,7 +805,7 @@ class PrimaArenaFinanceSystem:
 
             df = pd.DataFrame(data['data'])
 
-            # Opções para dropdowns
+            # OpÃ§Ãµes para dropdowns
             banco_opts = self.get_dropdown_options(df, 'Tipo Banco')
             categoria_opts = self.get_dropdown_options(df, 'Categoria')
             forma_opts = self.get_dropdown_options(df, 'Forma de Recebimento')
@@ -879,7 +879,7 @@ class PrimaArenaFinanceSystem:
                         valor_filter, start_date, end_date
                     )
 
-            # Calcular estatísticas dos dados filtrados
+            # Calcular estatÃ­sticas dos dados filtrados
             filter_stats_data = self.calculate_filter_statistics(filtered_df, df)
 
             return {
@@ -901,13 +901,13 @@ class PrimaArenaFinanceSystem:
             if not raw_data:
                 return []
 
-            # Usar dados filtrados se disponíveis, senão usar dados brutos
+            # Usar dados filtrados se disponÃ­veis, senÃ£o usar dados brutos
             data_to_use = filtered_data if filtered_data else {'data': raw_data['data']}
             df = pd.DataFrame(data_to_use['data'])
 
             return self.create_smart_summary_cards(df, filter_stats_data or {})
 
-        # Callback para gráficos principais
+        # Callback para grÃ¡ficos principais
         @dash_app.callback(
             Output('main-chart-content', 'children'),
             [Input('main-tabs', 'active_tab'),
@@ -918,7 +918,7 @@ class PrimaArenaFinanceSystem:
             if not raw_data:
                 return self.create_no_data_message()
 
-            # Usar dados filtrados se disponíveis
+            # Usar dados filtrados se disponÃ­veis
             data_to_use = filtered_data if filtered_data else {'data': raw_data['data']}
             df = pd.DataFrame(data_to_use['data'])
 
@@ -969,7 +969,7 @@ class PrimaArenaFinanceSystem:
                 return ""
             
             if not filtered_data.get('filtered', False):
-                return dbc.Alert("🔵 Nenhum filtro ativo - mostrando todos os dados", color="info", className="py-2 mb-0 small")
+                return dbc.Alert("ðŸ”µ Nenhum filtro ativo - mostrando todos os dados", color="info", className="py-2 mb-0 small")
             
             original_count = filtered_data.get('original_count', 0)
             filtered_count = filtered_data.get('filtered_count', 0)
@@ -982,7 +982,7 @@ class PrimaArenaFinanceSystem:
                 ], color="warning", className="me-2"),
                 dbc.Badge([
                     html.I(className="fas fa-chart-bar me-1"),
-                    f"Redução: {original_count - filtered_count:,} registros"
+                    f"ReduÃ§Ã£o: {original_count - filtered_count:,} registros"
                 ], color="info")
             ]
             
@@ -1006,7 +1006,7 @@ class PrimaArenaFinanceSystem:
             return is_open, [html.I(className="fas fa-chevron-down me-1"), "Expandir"]
 
     # =====================================================
-    # MÉTODOS DE PROCESSAMENTO DE DADOS
+    # MÃ‰TODOS DE PROCESSAMENTO DE DADOS
     # =====================================================
 
     def process_file(self, file_path):
@@ -1023,7 +1023,7 @@ class PrimaArenaFinanceSystem:
             elif ext == '.json':
                 df = pd.read_json(file_path)
             else:
-                raise ValueError(f"Formato não suportado: {ext}")
+                raise ValueError(f"Formato nÃ£o suportado: {ext}")
 
             df = self.advanced_data_cleaning(df)
             stats_data = self.calculate_comprehensive_statistics(df)
@@ -1059,7 +1059,7 @@ class PrimaArenaFinanceSystem:
         # Remover linhas vazias
         df = df.dropna(how='all').reset_index(drop=True)
 
-        # Processar valores monetários
+        # Processar valores monetÃ¡rios
         value_columns = [col for col in df.columns if isinstance(col, str) and any(keyword in col.lower()
                                                        for keyword in ['valor', 'pago', 'receita', 'custo', 'preco'])]
 
@@ -1079,7 +1079,7 @@ class PrimaArenaFinanceSystem:
                 if df[col].isnull().all():
                     df[col] = pd.to_datetime(df[col], errors='coerce')
             except Exception as e:
-                logger.warning(f"Não foi possível converter a coluna '{col}' para datetime: {e}")
+                logger.warning(f"NÃ£o foi possÃ­vel converter a coluna '{col}' para datetime: {e}")
                 continue
 
         # Padronizar texto
@@ -1104,7 +1104,7 @@ class PrimaArenaFinanceSystem:
         value_str = str(value).strip()
         is_negative = any(indicator in value_str for indicator in ['-', '(', 'negativo'])
 
-        # Remover R$, espaços e outros caracteres não numéricos
+        # Remover R$, espaÃ§os e outros caracteres nÃ£o numÃ©ricos
         value_str = value_str.replace('R$', '').replace(' ', '').replace('(', '-').replace(')', '')
 
         import re
@@ -1153,7 +1153,7 @@ class PrimaArenaFinanceSystem:
                     'zero_count': (values == 0).sum()
                 })
 
-        # Análise categórica
+        # AnÃ¡lise categÃ³rica
         categorical_analysis = {}
         for col_name in ['Tipo Banco', 'Categoria', 'Forma de Recebimento']:
             if col_name in df.columns:
@@ -1166,7 +1166,7 @@ class PrimaArenaFinanceSystem:
 
         stats_data['categorical_analysis'] = categorical_analysis
 
-        # Análise temporal
+        # AnÃ¡lise temporal
         date_cols = [col for col in df.columns if pd.api.types.is_datetime64_any_dtype(df[col])]
         if date_cols:
             date_col = date_cols[0]
@@ -1183,7 +1183,7 @@ class PrimaArenaFinanceSystem:
                         'records_by_month': records_by_month_serializable
                     }
                 except Exception as e:
-                    logger.warning(f"Erro ao agrupar por mês: {e}")
+                    logger.warning(f"Erro ao agrupar por mÃªs: {e}")
                     stats_data['date_analysis'] = {}
 
         return stats_data
@@ -1194,7 +1194,7 @@ class PrimaArenaFinanceSystem:
         if numeric_cols:
             return numeric_cols[0]
 
-        # Fallback para outras colunas numéricas
+        # Fallback para outras colunas numÃ©ricas
         potential_value_cols = [
             col for col in df.select_dtypes(include=[np.number]).columns
             if isinstance(col, str) and not any(id_keyword in col.lower() for id_keyword in ['id', 'codigo', 'cod', 'numero'])
@@ -1210,17 +1210,17 @@ class PrimaArenaFinanceSystem:
         return general_numeric_cols[0] if general_numeric_cols else None
 
     def apply_enhanced_smart_filters(self, df, trigger_id, banco_filter, categoria_filter, forma_filter, valor_filter, start_date, end_date):
-        """Método melhorado para aplicar filtros inteligentes com mais opções de data"""
+        """MÃ©todo melhorado para aplicar filtros inteligentes com mais opÃ§Ãµes de data"""
         filtered_df = df.copy()
 
-        # Filtros rápidos por data MELHORADOS
+        # Filtros rÃ¡pidos por data MELHORADOS
         date_cols = [col for col in filtered_df.columns if pd.api.types.is_datetime64_any_dtype(filtered_df[col])]
 
         if date_cols and trigger_id.startswith('btn-'):
             date_col_to_filter = date_cols[0]
             today = datetime.now().date()
             
-            # Filtros básicos de data
+            # Filtros bÃ¡sicos de data
             if trigger_id == 'btn-hoje':
                 filtered_df = filtered_df[filtered_df[date_col_to_filter].dt.date == today]
                 
@@ -1230,7 +1230,7 @@ class PrimaArenaFinanceSystem:
                 
             # Filtros de semana
             elif trigger_id == 'btn-esta-semana':
-                # Segunda-feira desta semana até hoje
+                # Segunda-feira desta semana atÃ© hoje
                 start_of_week = today - timedelta(days=today.weekday())  # Segunda-feira
                 filtered_df = filtered_df[
                     (filtered_df[date_col_to_filter].dt.date >= start_of_week) & 
@@ -1246,7 +1246,7 @@ class PrimaArenaFinanceSystem:
                     (filtered_df[date_col_to_filter].dt.date <= end_last_week)
                 ]
                 
-            # Filtros de período (últimos N dias)
+            # Filtros de perÃ­odo (Ãºltimos N dias)
             elif trigger_id == 'btn-7dias':
                 date_7_ago = today - timedelta(days=7)
                 filtered_df = filtered_df[
@@ -1275,9 +1275,9 @@ class PrimaArenaFinanceSystem:
                     (filtered_df[date_col_to_filter].dt.date <= today)
                 ]
                 
-            # Filtros de mês
+            # Filtros de mÃªs
             elif trigger_id == 'btn-este-mes':
-                # Primeiro dia do mês atual até hoje
+                # Primeiro dia do mÃªs atual atÃ© hoje
                 first_day_current_month = today.replace(day=1)
                 filtered_df = filtered_df[
                     (filtered_df[date_col_to_filter].dt.date >= first_day_current_month) & 
@@ -1285,7 +1285,7 @@ class PrimaArenaFinanceSystem:
                 ]
                 
             elif trigger_id == 'btn-mes-passado':
-                # Todo o mês passado
+                # Todo o mÃªs passado
                 if today.month == 1:
                     last_month = 12
                     last_year = today.year - 1
@@ -1302,7 +1302,7 @@ class PrimaArenaFinanceSystem:
                 ]
                 
             elif trigger_id == 'btn-este-ano':
-                # Primeiro dia do ano até hoje
+                # Primeiro dia do ano atÃ© hoje
                 first_day_year = datetime(today.year, 1, 1).date()
                 filtered_df = filtered_df[
                     (filtered_df[date_col_to_filter].dt.date >= first_day_year) & 
@@ -1325,7 +1325,7 @@ class PrimaArenaFinanceSystem:
             elif trigger_id == 'btn-domingo':
                 filtered_df = filtered_df[filtered_df[date_col_to_filter].dt.weekday == 6]
 
-        # Filtros personalizados (mesmo código anterior)
+        # Filtros personalizados (mesmo cÃ³digo anterior)
         if trigger_id == 'apply-filters':
             # Filtro por banco
             if banco_filter and 'Tipo Banco' in filtered_df.columns:
@@ -1383,7 +1383,7 @@ class PrimaArenaFinanceSystem:
                     'filtered_negative_count': (values < 0).sum()
                 })
 
-                # Comparação com dados originais
+                # ComparaÃ§Ã£o com dados originais
                 original_values = original_df[value_col].dropna()
                 if not original_values.empty:
                     original_sum = original_values.sum()
@@ -1401,19 +1401,19 @@ class PrimaArenaFinanceSystem:
         return stats_data
 
     # =====================================================
-    # MÉTODOS DE CRIAÇÃO DE GRÁFICOS
+    # MÃ‰TODOS DE CRIAÃ‡ÃƒO DE GRÃFICOS
     # =====================================================
 
     def create_overview_charts(self, df):
-        """Criar visão geral com múltiplos gráficos"""
+        """Criar visÃ£o geral com mÃºltiplos grÃ¡ficos"""
         colors = COLOR_PALETTES['prima_arena']
         value_col = self.find_main_value_column(df)
         charts = []
 
         if not value_col or df.empty:
-            return self.create_no_data_message("Coluna de valores não encontrada")
+            return self.create_no_data_message("Coluna de valores nÃ£o encontrada")
 
-        # 1. Gráfico de Pizza - Distribuição por Categoria
+        # 1. GrÃ¡fico de Pizza - DistribuiÃ§Ã£o por Categoria
         if 'Categoria' in df.columns:
             categoria_data = df.groupby('Categoria')[value_col].agg(['sum', 'count']).reset_index()
             categoria_data.columns = ['Categoria', 'Valor_Total', 'Quantidade']
@@ -1424,7 +1424,7 @@ class PrimaArenaFinanceSystem:
                     categoria_data_positive,
                     values='Valor_Total',
                     names='Categoria',
-                    title="Distribuição de Valores por Categoria",
+                    title="DistribuiÃ§Ã£o de Valores por Categoria",
                     color_discrete_sequence=colors,
                     hole=0.4
                 )
@@ -1440,7 +1440,7 @@ class PrimaArenaFinanceSystem:
                 fig_pie.update_layout(height=450, title_x=0.5)
                 charts.append(dbc.Col([dcc.Graph(figure=fig_pie)], md=6))
 
-        # 2. Gráfico de Barras - Banco vs Valor
+        # 2. GrÃ¡fico de Barras - Banco vs Valor
         if 'Tipo Banco' in df.columns:
             banco_data = df.groupby('Tipo Banco')[value_col].agg(['sum', 'mean', 'count']).reset_index()
             banco_data.columns = ['Banco', 'Total', 'Media', 'Quantidade']
@@ -1450,7 +1450,7 @@ class PrimaArenaFinanceSystem:
                 fig_bar = make_subplots(
                     rows=1, cols=1,
                     secondary_y=True,
-                    subplot_titles=["Análise por Banco"]
+                    subplot_titles=["AnÃ¡lise por Banco"]
                 )
 
                 fig_bar.add_trace(
@@ -1470,7 +1470,7 @@ class PrimaArenaFinanceSystem:
                         x=banco_data['Banco'],
                         y=banco_data['Media'],
                         mode='lines+markers',
-                        name='Valor Médio',
+                        name='Valor MÃ©dio',
                         line=dict(color=colors[1], width=3),
                         marker=dict(size=8)
                     ),
@@ -1479,27 +1479,27 @@ class PrimaArenaFinanceSystem:
 
                 fig_bar.update_xaxes(title_text="Banco", tickangle=-45)
                 fig_bar.update_yaxes(title_text="Valor Total (R$)", secondary_y=False)
-                fig_bar.update_yaxes(title_text="Valor Médio (R$)", secondary_y=True)
+                fig_bar.update_yaxes(title_text="Valor MÃ©dio (R$)", secondary_y=True)
                 fig_bar.update_layout(height=450, hovermode='x unified')
 
                 charts.append(dbc.Col([dcc.Graph(figure=fig_bar)], md=6))
 
         if not charts:
-            return self.create_no_data_message("Dados insuficientes para visão geral")
+            return self.create_no_data_message("Dados insuficientes para visÃ£o geral")
         return dbc.Row(charts)
 
     def create_banco_analysis_charts(self, df):
         if 'Tipo Banco' not in df.columns:
-            return self.create_no_data_message("Coluna 'Tipo Banco' não encontrada")
+            return self.create_no_data_message("Coluna 'Tipo Banco' nÃ£o encontrada")
 
         colors = COLOR_PALETTES['analise']
         value_col = self.find_main_value_column(df)
         charts = []
 
         if not value_col or df.empty:
-             return self.create_no_data_message("Dados insuficientes para análise por banco")
+             return self.create_no_data_message("Dados insuficientes para anÃ¡lise por banco")
 
-        # Análise de Quantidade por Banco
+        # AnÃ¡lise de Quantidade por Banco
         banco_counts_data = df['Tipo Banco'].value_counts().reset_index()
         banco_counts_data.columns = ['Tipo Banco', 'Quantidade']
         banco_counts_data = banco_counts_data.sort_values(by='Quantidade', ascending=False)
@@ -1515,18 +1515,18 @@ class PrimaArenaFinanceSystem:
             )])
 
             fig_qty.update_layout(
-                title="Quantidade de Transações por Banco",
+                title="Quantidade de TransaÃ§Ãµes por Banco",
                 title_x=0.5,
                 height=max(400, len(banco_counts_data) * 30),
-                xaxis_title="Quantidade de Transações",
+                xaxis_title="Quantidade de TransaÃ§Ãµes",
                 yaxis_title="Tipo de Banco",
                 yaxis=dict(autorange="reversed")
             )
             charts.append(dbc.Col([dcc.Graph(figure=fig_qty)], md=6))
 
-        # Análise de Valores por Banco
+        # AnÃ¡lise de Valores por Banco
         banco_values_data = df.groupby('Tipo Banco')[value_col].agg(['sum', 'mean', 'count']).round(2).reset_index()
-        banco_values_data.columns = ['Tipo Banco', 'Total', 'Média', 'Quantidade']
+        banco_values_data.columns = ['Tipo Banco', 'Total', 'MÃ©dia', 'Quantidade']
         banco_values_data = banco_values_data.sort_values(by='Total', ascending=False)
 
         if not banco_values_data.empty:
@@ -1541,9 +1541,9 @@ class PrimaArenaFinanceSystem:
             ))
 
             fig_values.add_trace(go.Scatter(
-                name='Valor Médio',
+                name='Valor MÃ©dio',
                 x=banco_values_data['Tipo Banco'],
-                y=banco_values_data['Média'],
+                y=banco_values_data['MÃ©dia'],
                 mode='lines+markers',
                 marker=dict(color=colors[2], size=8),
                 yaxis='y2',
@@ -1551,32 +1551,32 @@ class PrimaArenaFinanceSystem:
             ))
 
             fig_values.update_layout(
-                title="Análise de Valores por Banco",
+                title="AnÃ¡lise de Valores por Banco",
                 title_x=0.5,
                 height=max(400, len(banco_values_data) * 30),
                 xaxis_title="Tipo de Banco",
                 yaxis=dict(title="Valor Total (R$)", side="left", showgrid=False),
-                yaxis2=dict(title="Valor Médio (R$)", side="right", overlaying="y", showgrid=True, gridcolor='lightgrey'),
+                yaxis2=dict(title="Valor MÃ©dio (R$)", side="right", overlaying="y", showgrid=True, gridcolor='lightgrey'),
                 legend=dict(x=0.01, y=0.99, bordercolor="Black", borderwidth=1)
             )
             charts.append(dbc.Col([dcc.Graph(figure=fig_values)], md=6))
 
         if not charts:
-            return self.create_no_data_message("Dados insuficientes para análise por banco")
+            return self.create_no_data_message("Dados insuficientes para anÃ¡lise por banco")
         return dbc.Row(charts)
 
     def create_categoria_analysis_charts(self, df):
         if 'Categoria' not in df.columns:
-            return self.create_no_data_message("Coluna 'Categoria' não encontrada")
+            return self.create_no_data_message("Coluna 'Categoria' nÃ£o encontrada")
 
         colors = COLOR_PALETTES['financeiro']
         value_col = self.find_main_value_column(df)
         charts = []
 
         if not value_col or df.empty:
-             return self.create_no_data_message("Dados insuficientes para análise por categoria")
+             return self.create_no_data_message("Dados insuficientes para anÃ¡lise por categoria")
 
-        # Treemap - Proporção de Valores por Categoria
+        # Treemap - ProporÃ§Ã£o de Valores por Categoria
         categoria_values_sum = df.groupby('Categoria')[value_col].sum().reset_index()
         categoria_values_sum = categoria_values_sum[categoria_values_sum[value_col] > 0]
         categoria_values_sum = categoria_values_sum.sort_values(by=value_col, ascending=False)
@@ -1601,21 +1601,21 @@ class PrimaArenaFinanceSystem:
             charts.append(dbc.Col([dcc.Graph(figure=fig_treemap)], md=12))
 
         if not charts:
-            return self.create_no_data_message("Dados insuficientes para análise por categoria")
+            return self.create_no_data_message("Dados insuficientes para anÃ¡lise por categoria")
         return dbc.Row(charts)
 
     def create_forma_analysis_charts(self, df):
         if 'Forma de Recebimento' not in df.columns:
-            return self.create_no_data_message("Coluna 'Forma de Recebimento' não encontrada")
+            return self.create_no_data_message("Coluna 'Forma de Recebimento' nÃ£o encontrada")
 
         colors = COLOR_PALETTES['moderno']
         value_col = self.find_main_value_column(df)
         charts = []
 
         if df.empty:
-             return self.create_no_data_message("Dados insuficientes para análise por forma")
+             return self.create_no_data_message("Dados insuficientes para anÃ¡lise por forma")
 
-        # Gráfico de Barras Horizontais
+        # GrÃ¡fico de Barras Horizontais
         forma_counts_data = df['Forma de Recebimento'].value_counts().reset_index()
         forma_counts_data.columns = ['Forma de Recebimento', 'Quantidade']
         forma_counts_data = forma_counts_data.sort_values(by='Quantidade', ascending=True)
@@ -1634,14 +1634,14 @@ class PrimaArenaFinanceSystem:
                 title="Quantidade por Forma de Recebimento",
                 title_x=0.5,
                 height=max(300, len(forma_counts_data) * 35),
-                xaxis_title="Quantidade de Transações",
+                xaxis_title="Quantidade de TransaÃ§Ãµes",
                 yaxis_title="Forma de Recebimento",
                 margin=dict(l=150)
             )
             charts.append(dbc.Col([dcc.Graph(figure=fig_horizontal)], md=12))
 
         if not charts:
-            return self.create_no_data_message("Dados insuficientes para análise por forma")
+            return self.create_no_data_message("Dados insuficientes para anÃ¡lise por forma")
         return dbc.Row(charts)
 
     def create_trend_analysis_charts(self, df):
@@ -1649,20 +1649,20 @@ class PrimaArenaFinanceSystem:
         value_col = self.find_main_value_column(df)
 
         if not date_cols or not value_col:
-            return self.create_no_data_message("Dados de data ou valores não encontrados")
+            return self.create_no_data_message("Dados de data ou valores nÃ£o encontrados")
 
         date_col = date_cols[0]
         df_clean = df.dropna(subset=[date_col, value_col]).copy()
 
         if df_clean.empty:
-            return self.create_no_data_message("Dados insuficientes para análise de tendência")
+            return self.create_no_data_message("Dados insuficientes para anÃ¡lise de tendÃªncia")
 
         colors = COLOR_PALETTES['prima_arena']
         charts = []
 
         df_clean.sort_values(by=date_col, inplace=True)
 
-        # Agregação diária
+        # AgregaÃ§Ã£o diÃ¡ria
         daily_data = df_clean.groupby(df_clean[date_col].dt.date)[value_col].agg(['sum', 'count', 'mean']).reset_index()
         daily_data.columns = ['Data', 'Valor_Total', 'Quantidade', 'Valor_Medio']
 
@@ -1673,24 +1673,24 @@ class PrimaArenaFinanceSystem:
                 x=daily_data['Data'],
                 y=daily_data['Valor_Total'],
                 mode='lines+markers',
-                name='Valor Total Diário',
+                name='Valor Total DiÃ¡rio',
                 line=dict(color=colors[0], width=2),
                 marker=dict(size=5)
             ))
 
-            # Média móvel de 7 dias
+            # MÃ©dia mÃ³vel de 7 dias
             if len(daily_data) >= 7:
                 daily_data['MA7_Valor'] = daily_data['Valor_Total'].rolling(window=7, min_periods=1, center=True).mean()
                 fig_trend.add_trace(go.Scatter(
                     x=daily_data['Data'],
                     y=daily_data['MA7_Valor'],
                     mode='lines',
-                    name='Média Móvel 7 dias',
+                    name='MÃ©dia MÃ³vel 7 dias',
                     line=dict(color=colors[1], width=2, dash='dash')
                 ))
 
             fig_trend.update_layout(
-                title="Tendência de Valores Diários",
+                title="TendÃªncia de Valores DiÃ¡rios",
                 title_x=0.5,
                 height=450,
                 xaxis_title="Data",
@@ -1700,21 +1700,21 @@ class PrimaArenaFinanceSystem:
             charts.append(dbc.Col([dcc.Graph(figure=fig_trend)], md=12))
 
         if not charts:
-            return self.create_no_data_message("Não foi possível gerar gráficos de tendência")
+            return self.create_no_data_message("NÃ£o foi possÃ­vel gerar grÃ¡ficos de tendÃªncia")
         return dbc.Row(charts)
 
     def create_distribution_charts(self, df):
         value_col = self.find_main_value_column(df)
 
         if not value_col or df.empty:
-            return self.create_no_data_message("Dados insuficientes para análise de distribuição")
+            return self.create_no_data_message("Dados insuficientes para anÃ¡lise de distribuiÃ§Ã£o")
 
         colors = COLOR_PALETTES['analise']
         charts = []
         values = df[value_col].dropna()
 
         if values.empty:
-            return self.create_no_data_message("Nenhum valor para análise")
+            return self.create_no_data_message("Nenhum valor para anÃ¡lise")
 
         # Histograma de Valores
         num_bins = min(max(10, int(len(values)/10)), 50)
@@ -1723,21 +1723,21 @@ class PrimaArenaFinanceSystem:
             x=values,
             nbinsx=num_bins,
             marker=dict(color=colors[0], opacity=0.75, line=dict(color='black', width=0.5)),
-            name='Distribuição'
+            name='DistribuiÃ§Ã£o'
         )])
 
         fig_hist.update_layout(
-            title="Histograma da Distribuição de Valores",
+            title="Histograma da DistribuiÃ§Ã£o de Valores",
             title_x=0.5,
             height=450,
             xaxis_title=f"Valor ({CONFIG.get('CURRENCY_SYMBOL', 'R$')})",
-            yaxis_title="Frequência",
+            yaxis_title="FrequÃªncia",
             bargap=0.1
         )
         charts.append(dbc.Col([dcc.Graph(figure=fig_hist)], md=12))
 
         if not charts:
-            return self.create_no_data_message("Dados insuficientes para distribuição")
+            return self.create_no_data_message("Dados insuficientes para distribuiÃ§Ã£o")
         return dbc.Row(charts)
 
     def create_smart_summary_cards(self, df, filter_stats_data):
@@ -1756,7 +1756,7 @@ class PrimaArenaFinanceSystem:
                             dbc.Col(html.I(className="fas fa-database fa-2x text-primary mb-2"), width="auto", className="align-self-center"),
                             dbc.Col([
                                 html.H4(f"{total_records:,}", className="text-primary fw-bold mb-0"),
-                                html.P("Registros Visíveis", className="text-muted mb-0 small"),
+                                html.P("Registros VisÃ­veis", className="text-muted mb-0 small"),
                                 html.Small(f"de {original_records:,} total ({(total_records/original_records*100) if original_records > 0 else 0:.1f}%)"
                                            if total_records != original_records else "total (100%)",
                                            className="text-info small")
@@ -1780,8 +1780,8 @@ class PrimaArenaFinanceSystem:
                                 dbc.Col(html.I(className="fas fa-money-bill-wave fa-2x text-success mb-2"), width="auto", className="align-self-center"),
                                 dbc.Col([
                                     html.H4(f"{CONFIG.get('CURRENCY_SYMBOL', 'R$')} {total_value:,.2f}", className="text-success fw-bold mb-0"),
-                                    html.P("Valor Total Visível", className="text-muted mb-0 small"),
-                                    html.Small(f"Média: {CONFIG.get('CURRENCY_SYMBOL', 'R$')} {avg_value:,.2f}", className="text-info small")
+                                    html.P("Valor Total VisÃ­vel", className="text-muted mb-0 small"),
+                                    html.Small(f"MÃ©dia: {CONFIG.get('CURRENCY_SYMBOL', 'R$')} {avg_value:,.2f}", className="text-info small")
                                 ])
                             ])
                         ])
@@ -1823,7 +1823,7 @@ class PrimaArenaFinanceSystem:
                             dbc.Col(html.I(className="fas fa-filter fa-2x text-warning mb-2"), width="auto", className="align-self-center"),
                             dbc.Col([
                                 html.H4(f"{filter_percentage:.1f}%", className="text-warning fw-bold mb-0"),
-                                html.P("Dados Visíveis (Filtro)", className="text-muted mb-0 small"),
+                                html.P("Dados VisÃ­veis (Filtro)", className="text-muted mb-0 small"),
                                 html.Small("Filtros aplicados" if filter_percentage < 100 else "Sem filtros ativos",
                                            className="text-secondary small")
                             ])
@@ -1836,14 +1836,14 @@ class PrimaArenaFinanceSystem:
         return cards_list
 
     def create_enhanced_data_table(self, df):
-        # Preparar colunas com formatação específica
+        # Preparar colunas com formataÃ§Ã£o especÃ­fica
         columns = []
         df_display = df.copy()
 
         for col_name in df_display.columns:
             col_config = {"name": str(col_name).replace('_', ' ').title(), "id": col_name}
 
-            # Formatação para colunas numéricas
+            # FormataÃ§Ã£o para colunas numÃ©ricas
             if pd.api.types.is_numeric_dtype(df_display[col_name]):
                 is_currency = '_Numerico' in str(col_name) or \
                               any(keyword in str(col_name).lower() for keyword in ['valor', 'pago', 'receita', 'custo', 'preco', 'total'])
@@ -1866,7 +1866,7 @@ class PrimaArenaFinanceSystem:
                              "format": dash_table.Format.Format(precision=0, scheme=dash_table.Format.Scheme.fixed).group(True) if df_display[col_name].apply(lambda x: x == int(x) if pd.notnull(x) else True).all() else dash_table.Format.Format(precision=2, scheme=dash_table.Format.Scheme.fixed).group(True)
                         })
 
-            # Formatação para colunas de data/hora
+            # FormataÃ§Ã£o para colunas de data/hora
             elif pd.api.types.is_datetime64_any_dtype(df_display[col_name]):
                 col_config.update({"type": "datetime"})
                 try:
@@ -1929,7 +1929,7 @@ class PrimaArenaFinanceSystem:
             ]
         )
 
-    def create_no_data_message(self, message="Nenhum dado disponível para visualização."):
+    def create_no_data_message(self, message="Nenhum dado disponÃ­vel para visualizaÃ§Ã£o."):
         return dbc.Alert([
             html.Div([
                 html.I(className="fas fa-info-circle fa-3x text-primary mb-3"),
@@ -1942,7 +1942,7 @@ class PrimaArenaFinanceSystem:
         return dbc.Badge(text, color=color, className="fs-6 p-2")
 
     # =====================================================
-    # MÉTODOS AUXILIARES
+    # MÃ‰TODOS AUXILIARES
     # =====================================================
 
     def allowed_file(self, filename):
@@ -1975,7 +1975,7 @@ class PrimaArenaFinanceSystem:
                 unique_values = sorted(df[column_name].dropna().astype(str).unique())
                 return [{'label': str(val), 'value': str(val)} for val in unique_values]
             except Exception as e:
-                logger.warning(f"Erro ao obter opções para dropdown da coluna '{column_name}': {e}")
+                logger.warning(f"Erro ao obter opÃ§Ãµes para dropdown da coluna '{column_name}': {e}")
                 return []
         return []
 
@@ -2021,29 +2021,32 @@ class PrimaArenaFinanceSystem:
 # =====================================================
 
 if __name__ == '__main__':
+    # Obter porta do ambiente (para o Render) ou usar 8050 como padrão
+    port = int(os.environ.get('PORT', 8050))
+    host = '0.0.0.0'
     try:
         print("\n" + "="*70)
         print("PRIMA ARENA FINANCE SYSTEM v2.1.0 - CORRIGIDO COMPLETO")
         print("="*70)
         print("Melhorias desta versao:")
-        print("   • Correcao do erro de URL do Dash")
-        print("   • Correcao do erro de Unicode no Windows")
-        print("   • Templates separados em arquivos fisicos")
-        print("   • TODAS as funcionalidades mantidas:")
+        print("   â€¢ Correcao do erro de URL do Dash")
+        print("   â€¢ Correcao do erro de Unicode no Windows")
+        print("   â€¢ Templates separados em arquivos fisicos")
+        print("   â€¢ TODAS as funcionalidades mantidas:")
         print("     - Filtragem inteligente")
         print("     - Graficos avancados")
         print("     - Analises por banco/categoria/forma")
         print("     - Sistema de alertas")
         print("     - Exportacao de dados")
         print("     - Tabelas interativas")
-        print("   • Estrutura modular preparada para Git")
+        print("   â€¢ Estrutura modular preparada para Git")
         print("\nUsuarios Administrativos:")
         for u, p in CONFIG['ADMIN_USERS'].items():
-            print(f"   • {u} / {p}")
+            print(f"   â€¢ {u} / {p}")
         print("="*70)
 
         system = PrimaArenaFinanceSystem()
-        system.run(debug=True, port=8050, host='0.0.0.0')
+        system.run(debug=False, port=port, host=host)
 
     except KeyboardInterrupt:
         print("\nSistema interrompido pelo usuario.")
